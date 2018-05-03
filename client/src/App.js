@@ -6,15 +6,15 @@ import './App.css';
 
 class App extends Component {
   render() {
-    const onSuccess = (payment) => {
+    const onSuccess = () => {
       alert('The payment was succeeded!');
     }
 
-    const onCancel = (data) => {
+    const onCancel = () => {
       alert('The payment was cancelled!');
     }
 
-    const onError = (err) => {
+    const onError = () => {
       alert('Error!');
     }
 
@@ -27,33 +27,53 @@ class App extends Component {
       production: 'YOUR-PRODUCTION-APP-ID',
     }
 
-    let token = null;
-    const onToken = (result) => {
-      token = result;
-      alert(`We are in business, ${token.email}`);
+    const onToken = (token) => {
+      fetch('/api/charge', {
+        method: 'POST',
+        body: JSON.stringify({ id: token.id, email : token.email }),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+      }).then(res => {
+        if (res.status === 200) {
+          onSuccess();
+        } else {
+          onError()
+        }
+      });
     }
 
     return (
       <div>
-        <PaypalExpressBtn
-          env={env} client={client}
-          currency={currency}
-          total={total}
-          onError={onError}
-          onSuccess={onSuccess}
-          onCancel={onCancel}
-        />
-
-        <StripeCheckout
-          token={onToken}
-          stripeKey='pk_test_Y8gnpBsGe3DGSUAGIeTpKAe3'
-          name='The Company name'
-          description='The project description'
-          amount={1000000}
-          currency='USD'
-          email="tansworkingspace@gmail.com"
-        />
-    </div>
+        <div>
+          <h4>The paypal account:</h4>
+          <p>email: buyer9876@gmail.com</p>
+          <p>password: 12345678</p>
+          <PaypalExpressBtn
+            env={env} client={client}
+            currency={currency}
+            total={total}
+            onError={onError}
+            onSuccess={onSuccess}
+            onCancel={onCancel}
+          />
+        </div>
+        <div>
+          <h4>The stripe card:</h4>
+          <p>4242424242424242	Visa</p>
+          <div><a href='https://stripe.com/docs/testing#cards'>See more</a></div>
+          <StripeCheckout
+            token={onToken}
+            stripeKey='pk_test_Y8gnpBsGe3DGSUAGIeTpKAe3'
+            name='The Company name'
+            description='The project description'
+            amount={1000}
+            currency='USD'
+            email='useremail@email.com'
+          />
+        </div>
+      </div>
     );
   }
 }
