@@ -4,7 +4,7 @@ import PaypalExpressBtn from 'react-paypal-express-checkout';
 const PaypalCheckOutButton = (props) => {
   const client = {
     sandbox:    'Aby3tnk18xMZLwUnOlPvtXkpUfI7QEmxDknzwNZyO88uW54-FTJzKZaoElBePQKtSA31toHMlvixjK-9',
-    production: 'YOUR-PRODUCTION-APP-ID'
+    production: ''
   };
 
   return (
@@ -19,6 +19,7 @@ const PaypalCheckOutButton = (props) => {
         onError={props.onError}
         onSuccess={props.onSuccess}
         onCancel={props.onCancel}
+        env='sandbox' // you can set here to 'production' for production
       />
     </div>
   );
